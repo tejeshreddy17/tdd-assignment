@@ -1,12 +1,23 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('string')
-  add(@Param('string') inputString: string): number {
-    return this.appService.add(inputString);
+  @Post()
+  async add(@Body() dto: { inputString: string }): Promise<number> {
+    if (!dto.inputString) {
+      throw new BadRequestException(`Required details are not present in body`);
+    }
+
+    return await this.appService.add(dto.inputString);
   }
 }

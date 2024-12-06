@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
-describe('AppController', () => {
-  let appController: AppController;
+describe('AppService', () => {
+  let appservice: AppService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -11,12 +12,28 @@ describe('AppController', () => {
       providers: [AppService],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appservice = app.get<AppService>(AppService);
   });
 
-  it('should return a number', async () => {
+  it('should return a zero for empty string', async () => {
     const inputString = '';
 
-    expect(appController.add(inputString)).toEqual(expect.any(Number));
+    expect(await appservice.add(inputString)).toEqual(expect.any(Number));
+  });
+
+  it('should return a 6', async () => {
+    const inputString = '1\n2,3';
+
+    expect(await appservice.add(inputString)).toEqual(expect.any(Number));
+  });
+
+  it('should return a error', async () => {
+    const inputString = '-1,-2,-3';
+
+    expect(async () => {
+      await appservice.add(inputString);
+    }).rejects.toThrow(
+      new BadRequestException('Negative numbers are not allowed'),
+    );
   });
 });
