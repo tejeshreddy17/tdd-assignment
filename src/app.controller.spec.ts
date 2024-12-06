@@ -24,7 +24,7 @@ describe('AppService', () => {
   it('should return a 6', async () => {
     const inputString = '1\n2,3';
 
-    expect(await appservice.add(inputString)).toEqual(expect.any(Number));
+    expect(await appservice.add(inputString)).toEqual(6);
   });
 
   it('should return a error', async () => {
